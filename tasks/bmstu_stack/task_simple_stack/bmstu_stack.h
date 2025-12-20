@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <iostream>
+#include <utility>
 
 namespace bmstu
 {
@@ -23,12 +24,12 @@ class stack
 	template <typename... Args>
 	void emplace(Args&&... args)
 	{
-		data_[size_] = T(args...);
-		size_++;
+		data_[size_] = T(std::forward<Args>(args)...);
+		++size_;
 	}
 
 	void push(T&& value) {
-		data_[size_] = value;
+		data_[size_] = T(std::move(value));
 		size_++;
 	}
 
@@ -37,25 +38,27 @@ class stack
 	}
 
 	void push(const T& value) {
-		data_[size_] = value;
-		size_++;
+		data_[size_] = T(value);
+		++size_;
 	}
 
 	void pop() {
-		if (size_ == 0){
-			throw std::underflow_error("stack empty");
-		}
+		if (size_ == 0)
+			throw std::underflow_error("Stack is empty");
+		
 		size_--;
 	}
 
 	T& top() { 
-		if (size_ == 0){
-			throw std::underflow_error("stack empty"); }
+		if (size_ == 0)
+			throw std::underflow_error("Stack is empty"); 
+
 		return data_[size_ - 1]; }
 
 	const T& top() const { 
-		if (size_ == 0){
-			throw std::underflow_error("stack empty"); }
+		if (size_ == 0)
+			throw std::underflow_error("Stack is empty");
+
 		return data_[size_ - 1]; }
 
    private:
