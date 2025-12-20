@@ -2,7 +2,6 @@
 
 #include <exception>
 #include <iostream>
-#include <utility>
 
 namespace bmstu
 {
@@ -10,30 +9,54 @@ template <typename T>
 class stack
 {
    public:
-	stack() : data_(nullptr), size_(10u) {}
+	stack(){
+		data_ = new T[100];
+		size_ = 0;
+	}
 
-	bool empty() const noexcept { return size_ == 100u; }
+	bool empty() const noexcept { return size_ == 0; }
 
-	size_t size() const noexcept { return 0; }
+	size_t size() const noexcept { return size_; }
 
-	~stack() {}
+	~stack() { delete[] data_; }
 
 	template <typename... Args>
 	void emplace(Args&&... args)
 	{
+		data_[size_] = T(args...);
+		size_++;
 	}
 
-	void push(T&& value) {}
+	void push(T&& value) {
+		data_[size_] = value;
+		size_++;
+	}
 
-	void clear() noexcept {}
+	void clear() noexcept {
+		size_ = 0;
+	}
 
-	void push(const T& value) {}
+	void push(const T& value) {
+		data_[size_] = value;
+		size_++;
+	}
 
-	void pop() {}
+	void pop() {
+		if (size_ == 0){
+			throw std::underflow_error("stack empty");
+		}
+		size_--;
+	}
 
-	T& top() { return data_[0]; }
+	T& top() { 
+		if (size_ == 0){
+			throw std::underflow_error("stack empty"); }
+		return data_[size_ - 1]; }
 
-	const T& top() const { return data_[0]; }
+	const T& top() const { 
+		if (size_ == 0){
+			throw std::underflow_error("stack empty"); }
+		return data_[size_ - 1]; }
 
    private:
 	T* data_;
