@@ -24,12 +24,12 @@ class stack
 	template <typename... Args>
 	void emplace(Args&&... args)
 	{
-		data_[size_] = T(std::forward<Args>(args)...);
-		++size_;
+		new (&data_[size_]) T(std::forward<Args>(args)...);
+		size_++;
 	}
 
 	void push(T&& value) {
-		data_[size_] = T(std::move(value));
+		new (&data_[size_]) T(std::move(value));
 		size_++;
 	}
 
